@@ -11,7 +11,6 @@ App::App(
     , m_io { ImGui::GetIO() }
 {
     m_window.setFramerateLimit(120);
-    m_physics.enableGravity(true);
 }
 
 void App::update()
@@ -19,7 +18,7 @@ void App::update()
     while (m_window.pollEvent(m_eventHandler)) {
         ImGui::SFML::ProcessEvent(m_window, m_eventHandler);
         if (m_eventHandler.type == sf::Event::MouseButtonPressed && !m_io.WantCaptureMouse) {
-            m_physics.addNewParticle(m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)), Particles(10.f));
+            m_physics.addNewParticle(m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)));
         }
         if (m_eventHandler.type == sf::Event::Closed) {
             m_window.close();

@@ -40,6 +40,8 @@
     "C_Cpp.default.compilerPath": "/usr/bin/g++",
     "C_Cpp.intelliSenseEngineFallback": "enabled",
     "files.associations": {
-        "any": "cpp"
+        "any": "cpp",
+        "stdexcept": "cpp",
+        "exception": "cpp"
     },
 }

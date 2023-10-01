@@ -9,17 +9,21 @@ struct Physics : sf::Drawable {
 
     Physics(const sf::Vector2u& windowSize, float dt);
 
-    void addNewParticle(
-        const sf::Vector2f& pos,
-        Particles particle);
+    void addNewParticle(const sf::Vector2f& pos);
 
     void verletIntegrate();
     void solveCollisions();
     void solveConstraints();
-    void enableGravity(bool val);
     void solve();
 
-    float coeffOfRest { 1.f };
+    // global parameters
+    inline static float coeffOfRest { 1.f };
+    inline static float gravity { 9.81f };
+    // spawn parameter for new particle
+    inline static float particleRadius { 10.f };
+    inline static float particleMass { 10.f };
+    inline static float particleColor[4] { 1.f, 1.f, 1.f, 1.f };
+    inline static bool randomColor { false };
 
 private:
     void m_solveWallCollisions(Particles* particle);
@@ -35,7 +39,6 @@ private:
 
     sf::Vector2u m_windowSize;
     Grid m_grid;
-    bool m_gravityOn { true };
     float m_dt;
     std::list<Particles> m_particleCollection;
 };

@@ -1,5 +1,6 @@
 #include "Physics.hpp"
 #include <cmath>
+#include <iostream>
 
 Physics::Physics(const sf::Vector2u& windowSize, float dt)
     : m_windowSize { windowSize }
@@ -8,13 +9,26 @@ Physics::Physics(const sf::Vector2u& windowSize, float dt)
 {
 }
 
-void Physics::addNewParticle(
-    const sf::Vector2f& pos,
-    Particles particle)
+void Physics::addNewParticle(const sf::Vector2f& pos)
 {
     size_t row = std::floor(pos.y / m_grid.divs);
     size_t col = std::floor(pos.x / m_grid.divs);
     if (row < m_grid.rows && col < m_grid.cols) {
+        Particles particle = Particles(particleRadius, particleMass);
+        sf::Color color {};
+        if (!randomColor) {
+            color = sf::Color(
+                static_cast<int>(particleColor[0] * 255),
+                static_cast<int>(particleColor[1] * 255),
+                static_cast<int>(particleColor[2] * 255),
+                static_cast<int>(particleColor[3] * 255));
+        } else {
+            color = sf::Color(
+                rand() % 255,
+                rand() % 255,
+                rand() % 255, 255);
+        }
+        particle.setFillColor(color);
         particle.setPosition(pos);
         m_particleCollection.push_back(particle);
         m_grid.gridOfParticles[row * m_grid.cols + col].push_back(&m_particleCollection.back());
@@ -31,9 +45,7 @@ void Physics::verletIntegrate()
                 particle->Pos += particle->Vel * m_dt + 0.5f * particle->Acc * m_dt * m_dt;
                 auto acc = particle->Acc;
                 // particle->Acc = something
-                if (m_gravityOn) {
-                    particle->Acc.y += 10.f;
-                }
+                particle->Acc.y += gravity;
                 particle->prevVel = particle->Vel;
                 particle->Vel += (particle->Acc + acc) * 0.5f * m_dt;
                 particle->Acc *= 0.f; // resetting acc for next frame
@@ -66,11 +78,6 @@ void Physics::solveConstraints()
             m_solveWallCollisions(particle);
         }
     }
-}
-
-void Physics::enableGravity(bool val)
-{
-    m_gravityOn = val;
 }
 
 void Physics::m_solveWallCollisions(Particles* particle)
