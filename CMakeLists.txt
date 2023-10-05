@@ -29,7 +29,7 @@ FetchContent_Declare(Box2D
 FetchContent_MakeAvailable(Box2D)
 
 
-add_executable(Particles "src/main.cpp" "src/App/App.cpp" "src/Physics/Physics.cpp" "src/UI/UI.cpp" "src/Transform/Transform.cpp")
+add_executable(Particles "src/main.cpp" "src/App/App.cpp" "src/Physics/Physics.cpp" "src/UI/UI.cpp" "src/Transform/Transform.cpp" "src/Shooter/Shooter.cpp")
 target_link_libraries(Particles PRIVATE sfml-graphics sfml-window sfml-system ImGui-SFML box2d)
 
 if (WIN32) 

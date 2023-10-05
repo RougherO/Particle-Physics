@@ -9,7 +9,7 @@ class App {
     sf::RenderWindow m_window;
     sf::Event m_eventHandler;
     sf::Clock m_clock {};
-    float m_dt { 0.05f };
+    float m_dt { 0.01f };
     std::unique_ptr<UI> m_ui;
     ImGuiIO& m_io;
     Physics phx;
