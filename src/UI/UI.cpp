@@ -1,6 +1,5 @@
 #include "UI.hpp"
-#include "../Physics/Physics.hpp"
-#include <exception>
+// #include "../Physics/Physics.hpp"
 
 UI::UI(sf::RenderWindow& window)
     : m_window { window }
@@ -23,12 +22,12 @@ void UI::update(const sf::Time& dt)
     // Window Config
     ImGui::SetWindowPos({ 0, 0 });
     // Widgets
-    ImGui::SliderFloat("Radius of Particle", &Physics::particleRadius, 10.f, 50.f);
-    ImGui::SliderFloat("Mass of Particle", &Physics::particleMass, 10.f, 50.f);
-    ImGui::Checkbox("Random Color", &Physics::randomColor);
-    if (!Physics::randomColor) {
-        ImGui::ColorEdit4("Particle Color", &Physics::particleColor[0]);
-    }
+    // ImGui::SliderFloat("Radius of Particle", &Physics::particleRadius, 10.f, 50.f);
+    // ImGui::SliderFloat("Mass of Particle", &Physics::particleMass, 10.f, 50.f);
+    // ImGui::Checkbox("Random Color", &Physics::randomColor);
+    // if (!Physics::randomColor) {
+    //     ImGui::ColorEdit4("Particle Color", &Physics::particleColor[0]);
+    // }
     // Window End
     ImGui::End();
 }

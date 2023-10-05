@@ -1,44 +1,52 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "../Particles/Particles.hpp"
-#include "../Grid/Grid.hpp"
-#include <list>
-#include <vector>
+#include <box2d/box2d.h>
+#include <unordered_map>
+#include "../Transform/Transform.hpp"
 
-struct Physics : sf::Drawable {
-
-    Physics(const sf::Vector2u& windowSize, float dt);
-
-    void addNewParticle(const sf::Vector2f& pos);
-
-    void verletIntegrate();
-    void solveCollisions();
-    void solveConstraints();
-    void solve();
-
-    // global parameters
+struct Physics {
     inline static float coeffOfRest { 1.f };
-    inline static float gravity { 9.81f };
-    // spawn parameter for new particle
-    inline static float particleRadius { 10.f };
-    inline static float particleMass { 10.f };
-    inline static float particleColor[4] { 1.f, 1.f, 1.f, 1.f };
-    inline static bool randomColor { false };
+    inline static float friction { 0.f };
+    inline static float density { 10.f };
+    inline static float lengthOfBox { 10.f };
+    inline static float heightOfBox { 10.f };
+
+    // Circle properties
+    inline static float radius { 10.f };
+    inline static std::unordered_map<b2Body*, sf::CircleShape> circleList {};
+
+    static void setMaxLength(float length);
+
+    // static void createBoundary(float length, float height)
+    // {
+    //     b2BodyDef bodyDef;
+    //     bodyDef.position.Set(0.f, 0.f);
+    //     bodyDef.type = b2_staticBody;
+    //     bodyDef.allowSleep = false; // since boundary will have continuous collision
+
+    //     b2ChainShape boundShape;
+    //     b2Vec2 vertices[4];
+    //     vertices[0] = { 0.f, 0.f };
+    //     vertices[1] = { 0.f, height };
+    //     vertices[2] = { length, height };
+    //     vertices[3] = { length, 0.f };
+    //     boundShape.CreateLoop(vertices, 4);
+
+    //     b2FixtureDef fixtureDef;
+    //     fixtureDef.density = 1.f;
+    //     fixtureDef.friction = 0.f;
+    //     fixtureDef.restitution = 1.f;
+    //     fixtureDef.shape = &boundShape;
+    // }
+
+    static void spawnCircle(float x, float y);
+    static void update(float dt);
+    static void draw(sf::RenderWindow& window);
 
 private:
-    void m_solveWallCollisions(Particles* particle);
-    void m_solveCellCollisions(std::vector<Particles*>& cell1, std::vector<Particles*>& cell2);
-    void m_checkParticleCollision(Particles* particle1, Particles* particle2);
-    void m_solveParticleCollision(Particles* particle1, Particles* particle2, const sf::Vector2f& axis, float t_leftAfterCollision);
-    float m_justBeforeCollision(Particles* particle1, Particles* particle2, const sf::Vector2f& collisionAxis, float dist);
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    inline static size_t m_velIterations { 6 };
+    inline static size_t m_posIterations { 2 };
 
-    float m_magOfVec(const sf::Vector2f& vec);
-    float m_dotProduct(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
-    sf::Vector2f m_unitVec(const sf::Vector2f& vec);
-
-    sf::Vector2u m_windowSize;
-    Grid m_grid;
-    float m_dt;
-    std::list<Particles> m_particleCollection;
+    inline static b2Vec2 m_gravity { 0.f, 1.5f };
+    inline static b2World m_world { m_gravity };
 };

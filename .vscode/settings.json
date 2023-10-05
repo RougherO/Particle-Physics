@@ -42,6 +42,7 @@
     "files.associations": {
         "any": "cpp",
         "stdexcept": "cpp",
-        "exception": "cpp"
+        "exception": "cpp",
+        "new": "cpp"
     },
 }

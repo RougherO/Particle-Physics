@@ -6,10 +6,10 @@ App::App(
     std::string_view title)
 
     : m_window { sf::VideoMode(width, height), std::string(title), sf::Style::Default }
-    , m_physics { m_window.getSize(), m_dt }
     , m_ui { std::make_unique<UI>(m_window) }
     , m_io { ImGui::GetIO() }
 {
+    Physics::setMaxLength(m_window.getSize().x);
     m_window.setFramerateLimit(120);
 }
 
@@ -18,7 +18,7 @@ void App::update()
     while (m_window.pollEvent(m_eventHandler)) {
         ImGui::SFML::ProcessEvent(m_window, m_eventHandler);
         if (m_eventHandler.type == sf::Event::MouseButtonPressed && !m_io.WantCaptureMouse) {
-            m_physics.addNewParticle(m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)));
+            Physics::spawnCircle(m_eventHandler.mouseButton.x, m_eventHandler.mouseButton.y);
         }
         if (m_eventHandler.type == sf::Event::Closed) {
             m_window.close();
@@ -26,14 +26,14 @@ void App::update()
     }
     // update ui
     m_ui->update(m_clock.restart());
+    Physics::update(m_dt);
     // update game logic
-    m_physics.solve();
 }
 
 void App::draw()
 {
     m_window.clear();
-    m_window.draw(m_physics);
+    Physics::draw(m_window);
     m_ui->draw();
     m_window.display();
 }
