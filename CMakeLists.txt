@@ -22,8 +22,15 @@ FetchContent_Declare(ImGui-SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(ImGui-SFML)
 
-add_executable(Particles "src/main.cpp" "src/App/App.cpp" "src/Particles/Particles.cpp" "src/Grid/Grid.cpp" "src/Physics/Physics.cpp" "src/UI/UI.cpp")
-target_link_libraries(Particles PRIVATE sfml-graphics sfml-window sfml-system ImGui-SFML)
+set(BOX2D_BUILD_TESTBED OFF)
+FetchContent_Declare(Box2D
+    GIT_REPOSITORY https://github.com/erincatto/box2d.git
+    GIT_TAG 411acc3)
+FetchContent_MakeAvailable(Box2D)
+
+
+add_executable(Particles "src/main.cpp" "src/App/App.cpp" "src/Physics/Physics.cpp" "src/UI/UI.cpp" "src/Transform/Transform.cpp" "src/Shooter/Shooter.cpp")
+target_link_libraries(Particles PRIVATE sfml-graphics sfml-window sfml-system ImGui-SFML box2d)
 
 if (WIN32) 
     add_custom_command(

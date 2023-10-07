@@ -1,44 +1,54 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "../Particles/Particles.hpp"
-#include "../Grid/Grid.hpp"
-#include <list>
-#include <vector>
+#include <box2d/box2d.h>
+#include <unordered_map>
+#include "../Transform/Transform.hpp"
+#include "../Shooter/Shooter.hpp"
 
-struct Physics : sf::Drawable {
+struct Physics {
+    inline static float coeffOfRest { 0.5f };
+    inline static float friction { 0.f };
+    inline static float density { 10.f };
+    // inline static float lengthOfBox { 10.f };
+    // inline static float heightOfBox { 10.f };
 
-    Physics(const sf::Vector2u& windowSize, float dt);
+    // Boundary Properties
+    inline static float originX {};
+    inline static float originY {};
+    inline static float boundLength {};
+    inline static float boundHeight {};
+    inline static b2Body* boundaryBody {};
+    // Boundary internal properties
+    inline static sf::VertexArray m_boundary { sf::PrimitiveType::LineStrip, 5 };
 
-    void addNewParticle(const sf::Vector2f& pos);
+    // Circle properties
+    inline static bool randomRadius {};
+    inline static float randomRadiusllimit { 5.f };
+    inline static float randomRadiusulimit { 50.f };
+    inline static float radius { 10.f };
+    inline static bool circleColorRandom {};
+    inline static float circleColor[4] { 1.f, 1.f, 1.f, 1.f };
+    inline static std::unordered_map<b2Body*, sf::CircleShape> m_circleList {};
 
-    void verletIntegrate();
-    void solveCollisions();
-    void solveConstraints();
-    void solve();
+    // Shooter properties
+    inline static float angleOfEject {};
+    inline static float velOfEject { 1000.f };
+    // Shooter internal properties
+    inline static Shooter m_shooter;
 
-    // global parameters
-    inline static float coeffOfRest { 1.f };
-    inline static float gravity { 9.81f };
-    // spawn parameter for new particle
-    inline static float particleRadius { 10.f };
-    inline static float particleMass { 10.f };
-    inline static float particleColor[4] { 1.f, 1.f, 1.f, 1.f };
-    inline static bool randomColor { false };
+    static void setMaxLength(float maxLength);
 
-private:
-    void m_solveWallCollisions(Particles* particle);
-    void m_solveCellCollisions(std::vector<Particles*>& cell1, std::vector<Particles*>& cell2);
-    void m_checkParticleCollision(Particles* particle1, Particles* particle2);
-    void m_solveParticleCollision(Particles* particle1, Particles* particle2, const sf::Vector2f& axis, float t_leftAfterCollision);
-    float m_justBeforeCollision(Particles* particle1, Particles* particle2, const sf::Vector2f& collisionAxis, float dist);
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    static void createBoundary(float x, float y, float length, float height);
+    static void spawnCircle();
 
-    float m_magOfVec(const sf::Vector2f& vec);
-    float m_dotProduct(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
-    sf::Vector2f m_unitVec(const sf::Vector2f& vec);
+    static void updateShooterPos(const sf::Vector2f& pos);
+    static void update(float dt);
+    static void draw(sf::RenderWindow& window);
 
-    sf::Vector2u m_windowSize;
-    Grid m_grid;
-    float m_dt;
-    std::list<Particles> m_particleCollection;
+    inline static size_t m_velIterations { 6 };
+    inline static size_t m_posIterations { 2 };
+
+    // Game World
+    inline static b2Vec2 m_gravity { 0.f, 10.f };
+    inline static b2World m_world { m_gravity };
 };
